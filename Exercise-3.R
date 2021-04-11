@@ -14,6 +14,9 @@ library(ggrepel)
 
 head(elections_historic)
 
+elections<-data("elections_historic")
+
+
 # We're going to plot the winner's share of the popular vote against the winner's share of the electoral college vote. 
 
 ggplot(elections_historic, aes(x = popular_pct, y = ec_pct,
@@ -21,7 +24,7 @@ ggplot(elections_historic, aes(x = popular_pct, y = ec_pct,
   geom_hline(yintercept = 0.5, size = 1.4, color = "gray80") +
   geom_vline(xintercept = 0.5, size = 1.4, color = "gray80") +
   geom_point() +
-  #geom_text_repel() +
+  geom_text_repel() +
   scale_x_continuous(labels = scales::percent) +
   scale_y_continuous(labels = scales::percent) +
   labs(x = "Winner's share of popular vote", 
@@ -30,6 +33,8 @@ ggplot(elections_historic, aes(x = popular_pct, y = ec_pct,
        subtitle = "1824-2016")
 
 # Now, uncomment the geom_text_repel() above and replot. See what happens to the labels if you adjust the size of your plot window in RStudio. 
+##They change and autoadjust.
+
 
 # It's messy, but all points are labeled without tremendous overlaps. For this plot, we might be more interested in how far away each point is from the 50% threshold on both axis, or in the outcome of a particular election. So, it might make more sense to pick out points of interest in the data instead of labelling every single point. And this is where geom_text_repel() is powerful.
 
@@ -119,6 +124,50 @@ ggplot(elections_historic, aes(x = popular_pct, y = ec_pct,
 # (1) Highlights at least two outliers, either using text or color.
 # (2) Includes annotated text
 # (3) Includes an annotated shape
+
+ggplot(elections_historic, aes(x = popular_pct, y = ec_pct,
+                               label = winner_label)) + 
+  geom_hline(yintercept = 0.5, size = 1.4, color = "gray80") +
+  geom_vline(xintercept = 0.5, size = 1.4, color = "gray80") +
+  geom_point() +
+  geom_text_repel(data = subset(elections_historic,
+                                year %in% "1936" | 
+                                  winner %in% "John Quincy Adams")) +
+  annotate(geom="text", x = .42, y = .93,
+           label = "Roosevelt obtained 67.5% \n more votes than Adams",
+           hjust=0, 
+           fontface="italic", 
+           color = "red") +
+  annotate(geom = "segment", 
+           x = .315, xend = .603,
+           y = .34, yend = .98, 
+           colour = "red",
+           alpha = .4,
+           arrow =arrow()) +
+  annotate(geom = "segment", 
+           x = .608, xend = .603,
+           y = .97, yend = .78, 
+           colour = "darkgreen",
+           alpha = .4,
+           arrow =arrow()) +
+  annotate(geom="text", x = .52, y = .60,
+           label = "Harding got almost as many \n votes as FDR but lower EC votes",
+           hjust=0, 
+           fontface="italic", 
+           color = "darkgreen") +
+  scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_classic() + # removes gridlines
+  labs(x = "Winner's share of popular vote", 
+       y = "Winner's share of electoral college vote", 
+       title = "Presidential Elections: Popular & Electoral College Margins", 
+       subtitle = "1824-2016",
+       caption = "The lucky and the unlucky: From Adams to Roosevelt") # adds a caption
+
+
+
+
+
 # Be sure to update the title and caption accordingly. 
 
 # Save your plot: 
