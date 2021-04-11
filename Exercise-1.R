@@ -3,13 +3,19 @@
 
 # If you have not yet installed these libraries, use install.packages("")
 
+#####Unfortunately that data set in socviz could not be found. I tried several times
+
+install.packages("socviz")
+
 library(tidyverse)
 library(socviz)
+library(ggplot2)
 
-# Create a new table called rel_by_region
 
-rel_by_region <- gss_sum %>%
-  group_by(bigregion, religion) %>%
+
+rel_by_region <- gss_sum
+
+group_by(bigregion, religion) %>%
   summarize(N = n()) %>%
   mutate(freq = N / sum(N),
          pct = round((freq*100), 0))
